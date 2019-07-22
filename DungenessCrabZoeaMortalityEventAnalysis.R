@@ -4,6 +4,8 @@
 
 library(ggplot2)
 library(numbers)
+library(survival)
+library(surviveminer)
 
 
 #Setting the Working Directory of Well Event Data at Conclusion of Dungeness Zoea Study
@@ -11,12 +13,17 @@ setwd("~/Documents/NOAA_VCC_WA_2018/DGN_WellEventData")
 
 d <- read.csv("WellEventData.csv", stringsAsFactors = FALSE)
 
+View(d)
 
-#Creating a new vector from "Day". Selecting all values in the Day column and labeling as death date
-DeathDate <- Day[c(1:137573])]
+## (d$day+ 0) is used for the offset to allign the feeding date with actual diet
+d$MORTtoFEEDinterval <- rem((d$day+ 0),3)
+
+ggplot(data = d[d$day > 9,], aes(day, MORTtoFEEDinterval)) + geom_point()
+
+## (d$day+ 0) is used for the offset to allign with wellplate transfer date
+d$MORTtoTRNXinterval <- rem((d$day+ 0),9)
+
+ggplot(data = d[d$day > 9,], aes(day, MORTtoTRNXinterval)) + geom_point()
 
 
-#Creating a new vector and column using the list from Day Column to divide b 3. Remained is days from feeding
-rem3 <- rem(DeathDate/3, x > 9)
-#new column name
-d$rem3
+
